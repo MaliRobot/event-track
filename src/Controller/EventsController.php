@@ -9,6 +9,8 @@
 namespace App\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
+use phpDocumentor\Reflection\Types\Mixed_;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request as Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
@@ -18,6 +20,7 @@ use App\Entity\ViewEvent;
 use App\Entity\PlayEvent;
 use App\Entity\AddOccurrence;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EventsController extends FOSRestController {
     /**
@@ -58,10 +61,40 @@ class EventsController extends FOSRestController {
     /**
      * @Rest\Get("/api/get_events")
      */
-    public function getEventsAction(Request $request): Response
+    public function getEventsAction(Request $request)
     {
-        dump($request);
-        return new Response('get events hit', Response::HTTP_OK , []);
+        $format = $request->query->get('format');
+        if (!in_array($format, ['csv', 'json'])){
+            return new Response('Bad file format requested!', Response::HTTP_BAD_REQUEST);
+        }
+
+        $allData = ['clicks' => [], 'views' => [], 'plays' => []];
+        $allData = $this->addClicks($allData);
+        $allData = $this->addViews($allData);
+        $allData = $this->addPlays($allData);
+
+        if($format == 'json'){
+            return new JsonResponse(json_encode($allData, JSON_UNESCAPED_UNICODE), Response::HTTP_OK);
+        }
+
+        $fp = fopen('event_data.csv', 'w');
+
+        foreach ($allData as $key => $value) {
+            fputcsv($fp, [$key, ''], ',');
+            foreach($value as $k => $v){
+                fputcsv($fp, [$k, $v], ',');
+            }
+        }
+        fclose($fp);
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="event_data.csv"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize('event_data.csv'));
+        readfile('event_data.csv');
+        exit;
     }
 
     private function makeEntry($type, $date, $countryCode){
@@ -103,6 +136,33 @@ class EventsController extends FOSRestController {
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($event);
         $entityManager->flush();
+    }
+
+    private function addClicks($allData) {
+        $clickRepository = $this->getDoctrine()->getRepository(ClickEvent::class);
+        $clicks = $clickRepository->mostEventsByCountry();
+        foreach($clicks as $click){
+            $allData['clicks'][$click['countryCode']] = $click[1];
+        }
+        return $allData;
+    }
+
+    private function addViews($allData){
+        $viewRepository = $this->getDoctrine()->getRepository(ViewEvent::class);
+        $views = $viewRepository->mostEventsByCountry();
+        foreach($views as $view){
+            $allData['views'][$view['countryCode']] = $view[1];
+        }
+        return $allData;
+    }
+
+    private function addPlays($allData){
+        $playRepository = $this->getDoctrine()->getRepository(PlayEvent::class);
+        $plays = $playRepository->mostEventsByCountry();
+        foreach($plays as $play){
+            $allData['plays'][$play['countryCode']] = $play[1];
+        }
+        return $allData;
     }
 }
 

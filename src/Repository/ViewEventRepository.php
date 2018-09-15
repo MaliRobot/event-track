@@ -18,4 +18,19 @@ class ViewEventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ViewEvent::class);
     }
+
+    public function mostEventsByCountry($countries = 5){
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT SUM(c.numberOfEvents), c.countryCode 
+            FROM App\Entity\ViewEvent c 
+            WHERE c.date > :date
+            GROUP BY c.countryCode'
+        )->setParameter('date', new \DateTime('-7 days'))
+        ->setMaxResults($countries);
+
+        // returns an array of Product objects
+        return $query->execute();
+    }
 }
