@@ -74,27 +74,11 @@ class EventsController extends FOSRestController {
         $allData = $this->addPlays($allData);
 
         if($format == 'json'){
-            return new JsonResponse(json_encode($allData, JSON_UNESCAPED_UNICODE), Response::HTTP_OK);
+            $this->fetchJSON($allData);
+        } else {
+            $this->fetchCSV($allData);
         }
 
-        $fp = fopen('event_data.csv', 'w');
-
-        foreach ($allData as $key => $value) {
-            fputcsv($fp, [$key, ''], ',');
-            foreach($value as $k => $v){
-                fputcsv($fp, [$k, $v], ',');
-            }
-        }
-        fclose($fp);
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="event_data.csv"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize('event_data.csv'));
-        readfile('event_data.csv');
-        exit;
     }
 
     private function makeEntry($type, $date, $countryCode){
@@ -163,6 +147,49 @@ class EventsController extends FOSRestController {
             $allData['plays'][$play['countryCode']] = $play[1];
         }
         return $allData;
+    }
+
+    private function fetchJSON($allData){
+        $filename = 'event_data.json';
+        $fp = fopen($filename, 'w');
+
+        fwrite($fp, json_encode($allData));
+        fclose($fp);
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($filename));
+        readfile($filename);
+        unlink($filename);
+        exit;
+    }
+
+    private function fetchCSV($allData){
+        $filename = 'event_data.csv';
+        $fp = fopen($filename, 'w');
+
+        foreach ($allData as $key => $value) {
+            fputcsv($fp, [$key, ''], ',');
+            foreach($value as $k => $v){
+                fputcsv($fp, [$k, $v], ',');
+            }
+        }
+        fclose($fp);
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize('event_data.csv'));
+        readfile($filename);
+        unlink($filename);
+        exit;
     }
 }
 
