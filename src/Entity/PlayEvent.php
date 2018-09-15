@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="play_event")
  * @ORM\Entity(repositoryClass="App\Repository\PlayEventRepository")
  */
-class PlayEvent extends Event
+class PlayEvent extends Event implements AddOccurrence
 {
     const EVENT_TYPE = 'play';
 
@@ -37,5 +37,10 @@ class PlayEvent extends Event
     public function getEventType()
     {
         return self::EVENT_TYPE;
+    }
+
+    public function eventOccurred()
+    {
+        $this->setNumberOfEvents($this->getNumberOfEvents() + 1);
     }
 }

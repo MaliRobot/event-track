@@ -37,21 +37,21 @@ abstract class Event
 
     abstract protected function getEventType();
 
-//    /**
-//     * @return mixed
-//     */
-//    public function getCountryCode()
-//    {
-//        return $this->countryCode;
-//    }
-//
-//    /**
-//     * @param mixed $countryCode
-//     */
-//    public function setCountryCode($countryCode): void
-//    {
-//        $this->countryCode = $countryCode;
-//    }
+    /**
+     * @return mixed
+     */
+    public function getCountryCode()
+    {
+        return $this->countryCode;
+    }
+
+    /**
+     * @param mixed $countryCode
+     */
+    public function setCountryCode($countryCode): void
+    {
+        $this->countryCode = $countryCode;
+    }
 
     /**
      * @return mixed

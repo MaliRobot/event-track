@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="click_event")
  * @ORM\Entity(repositoryClass="App\Repository\ClickEventRepository")
  */
-class ClickEvent extends Event
+class ClickEvent extends Event implements AddOccurrence
 {
     const EVENT_TYPE = 'click';
 
@@ -37,5 +37,10 @@ class ClickEvent extends Event
     public function getEventType()
     {
         return self::EVENT_TYPE;
+    }
+
+    public function eventOccurred()
+    {
+        $this->setNumberOfEvents($this->getNumberOfEvents() + 1);
     }
 }
