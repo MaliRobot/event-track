@@ -41,6 +41,7 @@ class ClickEvent extends Event implements AddOccurrence
 
     public function eventOccurred()
     {
-        $this->setNumberOfEvents($this->getNumberOfEvents() + 1);
+        $this->numberOfEvents++;
+//        $this->setNumberOfEvents($this->getNumberOfEvents() + 1);
     }
 }
