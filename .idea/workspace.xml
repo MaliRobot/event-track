@@ -3,11 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c72c4198-e592-42e3-ad49-307da405b688" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/PlayEvent.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/PlayEvent.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/ViewEvent.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/ViewEvent.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/ClickEventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/ClickEventRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/PlayEventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/PlayEventRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/ViewEventRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/ViewEventRepository.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -95,8 +90,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Controller/EventsController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="135" column="56" selection-start-line="135" selection-start-column="56" selection-end-line="135" selection-end-column="56" />
+            <state relative-caret-position="547">
+              <caret line="155" column="37" selection-start-line="154" selection-end-line="155" selection-end-column="37" />
               <folding>
                 <element signature="e#117#165#0#PHP" expanded="true" />
               </folding>
@@ -108,7 +103,7 @@
         <entry file="file://$PROJECT_DIR$/src/Repository/ViewEventRepository.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="289">
-              <caret line="22" column="51" lean-forward="true" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
+              <caret line="22" column="51" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
               <folding>
                 <element signature="e#117#142#0#PHP" expanded="true" />
               </folding>
@@ -430,16 +425,15 @@
       <workItem from="1537020649148" duration="17666000" />
       <workItem from="1537038355044" duration="9631000" />
       <workItem from="1537112353627" duration="2482000" />
-      <workItem from="1537120572550" duration="752000" />
+      <workItem from="1537120572550" duration="2110000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41534000" />
+    <option name="totallyTimeSpent" value="42892000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26439232" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -632,7 +626,7 @@
     <entry file="file://$PROJECT_DIR$/src/Repository/ViewEventRepository.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
-          <caret line="22" column="51" lean-forward="true" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
+          <caret line="22" column="51" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
           <folding>
             <element signature="e#117#142#0#PHP" expanded="true" />
           </folding>
@@ -641,8 +635,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller/EventsController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="135" column="56" selection-start-line="135" selection-start-column="56" selection-end-line="135" selection-end-column="56" />
+        <state relative-caret-position="547">
+          <caret line="155" column="37" selection-start-line="154" selection-end-line="155" selection-end-column="37" />
           <folding>
             <element signature="e#117#165#0#PHP" expanded="true" />
           </folding>
