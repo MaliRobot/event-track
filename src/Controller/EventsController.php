@@ -9,8 +9,6 @@
 namespace App\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
-use phpDocumentor\Reflection\Types\Mixed_;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request as Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
@@ -18,8 +16,6 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use App\Entity\ClickEvent;
 use App\Entity\ViewEvent;
 use App\Entity\PlayEvent;
-use App\Entity\AddOccurrence;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EventsController extends FOSRestController {
@@ -53,9 +49,10 @@ class EventsController extends FOSRestController {
             return new Response('Not a valid country code!', Response::HTTP_BAD_REQUEST);
         }
 
-        $this->makeEntry($type, $date, $countryCode);
+        $this->get('old_sound_rabbit_mq.receive_data_producer')->setContentType('application/json');
+        $this->get('old_sound_rabbit_mq.receive_data_producer')->publish(json_encode(["type" => $type, "date" => $date, "country_code" => $countryCode]));
 
-        return new Response('Event of ' . $type . ' in country ' . $countryCode . " added!", Response::HTTP_CREATED , []);
+        return new Response('Event of ' . $type . ' in country ' . $countryCode . " received!", Response::HTTP_CREATED , []);
     }
 
     /**
@@ -79,47 +76,6 @@ class EventsController extends FOSRestController {
             $this->fetchCSV($allData);
         }
 
-    }
-
-    private function makeEntry($type, $date, $countryCode){
-        // initialize proper event type
-        if($type == 'click'){
-            $repository = $this->getDoctrine()->getRepository(ClickEvent::class);
-            $eventArray = $repository->findBy(['date' => $date, 'countryCode' => $countryCode]);
-            if (!$eventArray){
-                $event = new ClickEvent();
-                $event->setCountryCode($countryCode);
-                $event->setDate($date);
-            } else {
-                $event = $eventArray[0];
-            }
-        } elseif ($type == 'view') {
-            $repository = $this->getDoctrine()->getRepository(ViewEvent::class);
-            $eventArray = $repository->findBy(['date' => $date, 'countryCode' => $countryCode]);
-            if (!$eventArray){
-                $event = new ViewEvent();
-                $event->setCountryCode($countryCode);
-                $event->setDate($date);
-            } else {
-                $event = $eventArray[0];
-            }
-        } else {
-            $repository = $this->getDoctrine()->getRepository(PlayEvent::class);
-            $eventArray = $repository->findBy(['date' => $date, 'countryCode' => $countryCode]);
-            if (!$eventArray){
-                $event = new PlayEvent();
-                $event->setCountryCode($countryCode);
-                $event->setDate($date);
-            } else {
-                $event = $eventArray[0];
-            }
-        }
-
-        $event->eventOccurred();
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($event);
-        $entityManager->flush();
     }
 
     private function addClicks($allData) {
