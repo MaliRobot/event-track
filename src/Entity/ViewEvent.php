@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="view_event")
  * @ORM\Entity(repositoryClass="App\Repository\ViewEventRepository")
  */
-class ViewEvent extends Event //implements AddOccurrence
+class ViewEvent extends Event implements AddOccurrence
 {
     const EVENT_TYPE = 'view';
 
@@ -39,8 +39,8 @@ class ViewEvent extends Event //implements AddOccurrence
         return self::EVENT_TYPE;
     }
 
-//    public function eventOccurred()
-//    {
-//        $this->setNumberOfEvents($this->getNumberOfEvents() + 1);
-//    }
+    public function eventOccurred()
+    {
+        $this->setNumberOfEvents($this->getNumberOfEvents() + 1);
+    }
 }

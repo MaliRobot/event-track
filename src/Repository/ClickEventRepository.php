@@ -30,7 +30,6 @@ class ClickEventRepository extends ServiceEntityRepository
         )->setParameter('date', new \DateTime('-7 days'))
         ->setMaxResults($countries);
 
-        // returns an array of Product objects
         return $query->execute();
     }
 }
