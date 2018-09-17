@@ -33,3 +33,7 @@ services:
     receive_data_service:
         class:  App\Consumer\ReceiveDataService
         arguments: [ "@doctrine.orm.entity_manager" ]
+
+    send_data_service:
+        class:  App\Consumer\SendDataService
+        arguments: [ "@doctrine.orm.entity_manager" ]

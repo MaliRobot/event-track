@@ -8,6 +8,9 @@ old_sound_rabbit_mq:
         receive_data:
             connection:       default
             exchange_options: { name: 'receive_data', type: direct }
+        send_data:
+            connection:       default
+            exchange_options: { name: 'send_data', type: direct }
 #        task:
 #            connection:       default
 #            exchange_options: { name: 'task', type: direct }
@@ -17,6 +20,11 @@ old_sound_rabbit_mq:
             exchange_options:  { name: 'receive_data', type: direct }
             queue_options:     { name: 'receive_data' }
             callback:         App\Consumer\ReceiveDataService
+        send_data:
+            connection:       default
+            exchange_options:  { name: 'send_data', type: direct }
+            queue_options:     { name: 'send_data' }
+            callback:         App\Consumer\SendDataService
 #        task:
 #            connection:       default
 #            exchange_options: { name: 'task', type: direct }

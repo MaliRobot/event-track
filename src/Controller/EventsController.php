@@ -11,12 +11,7 @@ namespace App\Controller;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request as Request;
 use Symfony\Component\HttpFoundation\Response;
-use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use App\Entity\ClickEvent;
-use App\Entity\ViewEvent;
-use App\Entity\PlayEvent;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EventsController extends FOSRestController {
     /**
@@ -65,87 +60,35 @@ class EventsController extends FOSRestController {
             return new Response('Bad file format requested!', Response::HTTP_BAD_REQUEST);
         }
 
-        $allData = ['clicks' => [], 'views' => [], 'plays' => []];
-        $allData = $this->addClicks($allData);
-        $allData = $this->addViews($allData);
-        $allData = $this->addPlays($allData);
-
-        if($format == 'json'){
-            $this->fetchJSON($allData);
+        if($format == "json"){
+            $filename = (string) bin2hex(random_bytes(16)) . '.json';
+            $link = $_SERVER['SERVER_NAME'] . "/api/downloads/" . $filename;
         } else {
-            $this->fetchCSV($allData);
+            $filename = (string) bin2hex(random_bytes(16)) . '.csv';
+            $link = $_SERVER['SERVER_NAME'] . "/api/downloads/" .  $filename;
         }
 
+        $this->get('old_sound_rabbit_mq.send_data_producer')->setContentType('application/json');
+        $this->get('old_sound_rabbit_mq.send_data_producer')->publish(json_encode(["format" => $format, "filename" => $filename]));
+
+        return new Response('Data file in ' . $format . " requested! Download link will be available here (please wait while we generate it, it may take a while): " . $link, Response::HTTP_OK , []);
     }
 
-    private function addClicks($allData) {
-        $clickRepository = $this->getDoctrine()->getRepository(ClickEvent::class);
-        $clicks = $clickRepository->mostEventsByCountry();
-        foreach($clicks as $click){
-            $allData['clicks'][$click['countryCode']] = $click[1];
-        }
-        return $allData;
-    }
-
-    private function addViews($allData){
-        $viewRepository = $this->getDoctrine()->getRepository(ViewEvent::class);
-        $views = $viewRepository->mostEventsByCountry();
-        foreach($views as $view){
-            $allData['views'][$view['countryCode']] = $view[1];
-        }
-        return $allData;
-    }
-
-    private function addPlays($allData){
-        $playRepository = $this->getDoctrine()->getRepository(PlayEvent::class);
-        $plays = $playRepository->mostEventsByCountry();
-        foreach($plays as $play){
-            $allData['plays'][$play['countryCode']] = $play[1];
-        }
-        return $allData;
-    }
-
-    private function fetchJSON($allData){
-        $filename = 'event_data.json';
-        $fp = fopen($filename, 'w');
-
-        fwrite($fp, json_encode($allData));
-        fclose($fp);
-
+    /**
+     * @Rest\Get("/api/downloads/{filename}")
+     */
+    public function downloadAction($filename)
+    {
+        $file = $this->get('kernel')->getRootDir() . "\..\public\downloads\/". $filename;
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-        header('Content-Length: ' . filesize($filename));
-        readfile($filename);
-        unlink($filename);
-        exit;
-    }
-
-    private function fetchCSV($allData){
-        $filename = 'event_data.csv';
-        $fp = fopen($filename, 'w');
-
-        foreach ($allData as $key => $value) {
-            fputcsv($fp, [$key, ''], ',');
-            foreach($value as $k => $v){
-                fputcsv($fp, [$k, $v], ',');
-            }
-        }
-        fclose($fp);
-
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize('event_data.csv'));
-        readfile($filename);
-        unlink($filename);
-        exit;
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+        exit();
     }
 }
 

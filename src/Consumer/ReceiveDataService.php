@@ -13,7 +13,6 @@ use PhpAmqpLib\Message\AMQPMessage;
 use App\Entity\ClickEvent;
 use App\Entity\ViewEvent;
 use App\Entity\PlayEvent;
-use App\Repository\ClickEventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ReceiveDataService implements ConsumerInterface
