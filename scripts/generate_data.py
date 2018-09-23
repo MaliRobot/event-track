@@ -8,7 +8,7 @@ Created on Sat Sep 01 20:42:57 2018
 # import mysql.connector
 import requests 
 import sys, random, json
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 
 COUNTRY_CODES = {
          "BD": "Bangladesh", 
@@ -274,7 +274,7 @@ def callEndpoint(endpoint, iterations):
 
    dates = [];
    date_from = date(2018, 1, 15)
-   date_to = date(2018, 9, 15)
+   date_to =  datetime.utcnow().date()
    for dt in daterange(date_from, date_to):
       dates.append(dt.strftime("%Y-%m-%d"))
 
@@ -289,7 +289,7 @@ def callEndpoint(endpoint, iterations):
 if __name__ == "__main__":
    if len(sys.argv) > 2:
       endpoint = sys.argv[1]
-      interations = sys.argv[2]
+      iterations = int(sys.argv[2])
    else:
       endpoint = "http://event.local/api/add_event"
       iterations = 10

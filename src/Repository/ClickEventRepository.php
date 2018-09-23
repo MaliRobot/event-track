@@ -19,6 +19,10 @@ class ClickEventRepository extends ServiceEntityRepository
         parent::__construct($registry, ClickEvent::class);
     }
 
+    /**
+     * @param int $countries
+     * @return mixed
+     */
     public function mostEventsByCountry($countries = 5){
         $entityManager = $this->getEntityManager();
 

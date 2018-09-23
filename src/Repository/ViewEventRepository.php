@@ -19,6 +19,10 @@ class ViewEventRepository extends ServiceEntityRepository
         parent::__construct($registry, ViewEvent::class);
     }
 
+    /**
+     * @param int $countries
+     * @return mixed
+     */
     public function mostEventsByCountry($countries = 5){
         $entityManager = $this->getEntityManager();
 

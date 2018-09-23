@@ -24,6 +24,10 @@ class SendDataService implements ConsumerInterface
         $this->em = $entityManager;
     }
 
+    /**
+     * @param AMQPMessage $msg
+     * @return mixed|void
+     */
     public function execute(AMQPMessage $msg)
     {
         $response = json_decode($msg->body, true);
@@ -42,15 +46,24 @@ class SendDataService implements ConsumerInterface
         }
     }
 
+    /**
+     * @param $allData
+     * @return mixed
+     */
     private function addClicks($allData) {
         $clickRepository = $this->em->getRepository(ClickEvent::class);
         $clicks = $clickRepository->mostEventsByCountry();
+
         foreach($clicks as $click){
             $allData['clicks'][$click['countryCode']] = $click[1];
         }
         return $allData;
     }
 
+    /**
+     * @param $allData
+     * @return mixed
+     */
     private function addViews($allData){
         $viewRepository = $this->em->getRepository(ViewEvent::class);
         $views = $viewRepository->mostEventsByCountry();
@@ -60,6 +73,10 @@ class SendDataService implements ConsumerInterface
         return $allData;
     }
 
+    /**
+     * @param $allData
+     * @return mixed
+     */
     private function addPlays($allData){
         $playRepository = $this->em->getRepository(PlayEvent::class);
         $plays = $playRepository->mostEventsByCountry();
@@ -69,6 +86,10 @@ class SendDataService implements ConsumerInterface
         return $allData;
     }
 
+    /**
+     * @param $allData
+     * @param $filename
+     */
     private function fetchJSON($allData, $filename){
         $fp = fopen($filename, 'w');
 
@@ -76,6 +97,10 @@ class SendDataService implements ConsumerInterface
         fclose($fp);
     }
 
+    /**
+     * @param $allData
+     * @param $filename
+     */
     private function fetchCSV($allData, $filename) {
         $fp = fopen($filename, 'w');
 

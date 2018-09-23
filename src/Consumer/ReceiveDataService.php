@@ -23,6 +23,10 @@ class ReceiveDataService implements ConsumerInterface
         $this->em = $entityManager;
     }
 
+    /**
+     * @param AMQPMessage $msg
+     * @return mixed|void
+     */
     public function execute(AMQPMessage $msg)
     {
         $response = json_decode($msg->body, true);
@@ -32,6 +36,11 @@ class ReceiveDataService implements ConsumerInterface
         $this->makeEntry($type, $date, $countryCode);
     }
 
+    /**
+     * @param $type
+     * @param $date
+     * @param $countryCode
+     */
     private function makeEntry($type, $date, $countryCode){
         $date = date_create_from_format('Y-m-d', substr($date["date"], 0, 10));
         if($type == 'click'){
